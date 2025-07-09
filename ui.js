@@ -39,6 +39,9 @@ function segmentSettings(formEl) {
     number: values.number,
   };
 
+  if (boundaries.length > 0) {
+    boundaries = [];
+  }
   segmentsBoundaries(settings.settings);
   if (particles.length > 0) {
     particles = [];
@@ -48,14 +51,14 @@ function segmentSettings(formEl) {
 
 // POLYGONS FORM
 function poligonSettings(formEl) {
-  const inputs = this.querySelectorAll("input[type='number']");
+  const inputs = formEl.querySelectorAll("input[type='number']");
 
   const values = {
     minVertex: Number(inputs[0].value || inputs[0].placeholder),
     maxVertex: Number(inputs[1].value || inputs[1].placeholder),
-    number: Number(inputs[2].value || inputs[2].placeholder),
-    movePolygons,
-    moveParticles,
+    minRadius: Number(inputs[2].value || inputs[2].placeholder),
+    maxRadius: Number(inputs[3].value || inputs[3].placeholder),
+    number: Number(inputs[4].value || inputs[4].placeholder),
   };
 
   console.log("Polygons Form Values:", values);
@@ -64,10 +67,19 @@ function poligonSettings(formEl) {
   settings.settings = {
     minVertex: values.minVertex,
     maxVertex: values.maxVertex,
+    minRadius: values.minRadius,
+    maxRadius: values.maxRadius,
     number: values.number,
-    move: values.movePolygons,
-    moveParticles: values.moveParticles,
   };
+
+  if (boundaries.length > 0) {
+    boundaries = [];
+  }
+  polygonBoundaries(settings.settings);
+  if (particles.length > 0) {
+    particles = [];
+  }
+  particleGenerate();
 }
 
 // TEXT FORM
@@ -112,9 +124,11 @@ const forms = document.querySelectorAll(".form");
 forms.forEach((e, i) => {
   e.addEventListener("click", () => {
     forms.forEach((f) => f.classList.remove("active"));
-    document.querySelectorAll(".form-content").forEach((el) => {
+    document.querySelectorAll(".form-content").forEach((el, a) => {
       // nasconde tutti i contenuti
       el.classList.add("hidden");
+      if (i == 0) segmentSettings(forms[i]);
+      else if (i == 1) poligonSettings(forms[i]);
     });
     e.classList.add("active");
     formsContent[i].classList.remove("hidden"); //tranne quello cliccato

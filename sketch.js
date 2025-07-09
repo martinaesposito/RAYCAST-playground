@@ -51,7 +51,7 @@ function segmentsBoundaries(settings) {
     let y1 = random(margin, height - margin);
     let x2 = random(margin, width - margin);
     let y2 = random(margin, height - margin);
-    let candidate = new boundary(x1, y1, x2, y2);
+    let candidate = new segmentBoundary(x1, y1, x2, y2);
 
     let length = dist(x1, y1, x2, y2);
     if (length > settings.max || length < settings.min) continue;
@@ -74,6 +74,84 @@ function segmentsBoundaries(settings) {
       boundaries.push(candidate);
     }
   }
+}
+
+function polygonBoundaries(settings) {
+  if (boundaries.length > 0) boundaries = [];
+
+  let polygonCount = 0; // Conta i poligoni generati
+
+  while (polygonCount < settings.number) {
+    // Genera un poligono con numero di vertici variabile secondo i settings
+    const polygon = generatePolygon(
+      floor(random(settings.minVertex, settings.maxVertex)), //vertici
+      settings.minRadius,
+      settings.maxRadius
+    );
+
+    if (polygon && polygon.length > 0) {
+      // Controlla se il poligono si interseca con altri esistenti
+      let intersects = false;
+      for (let segment of polygon) {
+        for (let existingBoundary of boundaries) {
+          if (
+            segmentIntersect(
+              segment.a,
+              segment.b,
+              existingBoundary.a,
+              existingBoundary.b
+            )
+          ) {
+            intersects = true;
+            break;
+          }
+        }
+        if (intersects) break;
+      }
+
+      if (!intersects) {
+        // Aggiungi tutti i segmenti del poligono
+        boundaries.push(...polygon);
+        polygonCount++; // Incrementa il contatore dei poligoni
+      }
+    }
+  }
+}
+
+// Genera un singolo poligono
+function generatePolygon(numVertices, minRadius, maxRadius) {
+  // Centro del poligono
+  const centerX = random(margin * 2, width - margin * 2);
+  const centerY = random(margin * 2, height - margin * 2);
+
+  const radius = random(minRadius, maxRadius);
+
+  // Genera i vertici del poligono
+  const vertices = [];
+  for (let i = 0; i < numVertices; i++) {
+    const angle = (TWO_PI / numVertices) * i;
+
+    const x = centerX + cos(angle) * radius * random(0, 2);
+    const y = centerY + sin(angle) * radius * random(0, 2);
+
+    if (x < margin || x > width - margin || y < margin || y > height - margin) {
+      // Assicurati che i vertici siano dentro i margini
+      return null; // Poligono non valido
+    }
+
+    vertices.push({ x: x, y: y });
+  }
+
+  // Crea i segmenti connessi
+  const segments = [];
+  for (let i = 0; i < vertices.length; i++) {
+    const current = vertices[i];
+    const next = vertices[(i + 1) % vertices.length]; // Il modulo assicura che l'ultimo si connetta al primo
+
+    segments.push(new segmentBoundary(current.x, current.y, next.x, next.y));
+  }
+
+  return segments;
 }
 
 function particleGenerate() {

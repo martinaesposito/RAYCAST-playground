@@ -67,15 +67,23 @@
           <div class="form-content flex-col hidden">
             <div class="field">
               <label>minvertex</label>
-              <input type="number" placeholder="5" />
+              <input type="number" placeholder="3" />
             </div>
             <div class="field">
               <label>maxvertex</label>
-              <input type="number" placeholder="10" />
+              <input type="number" placeholder="6" />
+            </div>
+            <div class="field">
+              <label>minradius</label>
+              <input type="number" placeholder="50" />
+            </div>
+            <div class="field">
+              <label>maxradius</label>
+              <input type="number" placeholder="250" />
             </div>
             <div class="field">
               <label>number</label>
-              <input type="number" placeholder="8" />
+              <input type="number" placeholder="5" />
             </div>
 
             <button type="submit">render</button>
@@ -102,7 +110,7 @@
         <div class="field-box flex-col">
           <!-- movements -->
           <div class="field">
-            <label>move polygons</label>
+            <label>move boundaries</label>
             <label class="switch">
               <input type="checkbox" id="move-boundaries" />
               <span class="slider round"></span>
