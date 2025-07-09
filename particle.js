@@ -3,7 +3,7 @@ class particle {
     this.c = c;
     this.pos = createVector(x, y);
     this.rays = [];
-    for (let a = 0; a < 360; a += 0.25) {
+    for (let a = 0; a < 360; a += 0.5) {
       //creo un raggio ogni 10 degrees
       this.rays.push(new ray(this.pos, radians(a)));
     }
