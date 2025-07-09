@@ -6,7 +6,6 @@ class segmentBoundary {
     this.a = createVector(x1, y1);
     this.b = createVector(x2, y2);
 
-    // Offset casuali per il rumore Perlin
     this.noiseOffset = createVector(random(1000), random(1000));
   }
   move(t) {

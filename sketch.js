@@ -4,8 +4,8 @@ let boundaries = [];
 let coolors = [];
 let pM = null;
 
-let margin = 25;
-let numParticles = 5;
+const margin = 25;
+const numParticles = 5;
 
 const palette = [
   "#FF1493",
@@ -16,6 +16,8 @@ const palette = [
   "#FF8C00",
   "#FFFFFF",
 ];
+let font;
+let textPoints = [];
 
 let scaleFactor;
 let remapCoords = [];
@@ -24,6 +26,10 @@ let prevPinch = null;
 let isDragging = false;
 
 ///////////////////////////////
+function preload() {
+  font = loadFont("AVHersheySimplexLight.ttf");
+}
+
 function setup() {
   createCanvas((windowWidth / 5) * 4, windowHeight);
   noStroke();
@@ -35,6 +41,7 @@ function setup() {
   // genero le palline
   particleGenerate();
 
+  // creo la mano a partire dai risultati di detection
   if (detections.multiHandLandmarks !== undefined) {
     for (const hand of detections.multiHandLandmarks) {
       new Hand(hand);
@@ -42,6 +49,9 @@ function setup() {
   }
 }
 
+///////////////////////////////
+
+// SEGMENTI
 function segmentsBoundaries(settings) {
   if (boundaries.length > 0) boundaries = [];
   console.log(settings);
@@ -76,21 +86,19 @@ function segmentsBoundaries(settings) {
   }
 }
 
+// POLIGONI
 function polygonBoundaries(settings) {
-  if (boundaries.length > 0) boundaries = [];
+  if (boundaries.length > 0) boundaries = []; //se esistono già dei boundaries (es. segments) svuota l'array
 
   let polygonCount = 0; // Conta i poligoni generati
 
   while (polygonCount < settings.number) {
-    // Genera un poligono con numero di vertici variabile secondo i settings
     const polygon = generatePolygon(
       floor(random(settings.minVertex, settings.maxVertex)), //vertici
-      settings.minRadius,
-      settings.maxRadius
+      random(settings.minRadius, settings.maxRadius) //radius
     );
-
+    // Controlla se il poligono si interseca con altri esistenti
     if (polygon && polygon.length > 0) {
-      // Controlla se il poligono si interseca con altri esistenti
       let intersects = false;
       for (let segment of polygon) {
         for (let existingBoundary of boundaries) {
@@ -110,50 +118,72 @@ function polygonBoundaries(settings) {
       }
 
       if (!intersects) {
-        // Aggiungi tutti i segmenti del poligono
         boundaries.push(...polygon);
         polygonCount++; // Incrementa il contatore dei poligoni
       }
     }
   }
 }
-
-// Genera un singolo poligono
-function generatePolygon(numVertices, minRadius, maxRadius) {
-  // Centro del poligono
-  const centerX = random(margin * 2, width - margin * 2);
-  const centerY = random(margin * 2, height - margin * 2);
-
-  const radius = random(minRadius, maxRadius);
-
-  // Genera i vertici del poligono
+// singolo poligono
+function generatePolygon(numVertices, radius) {
+  // centro
+  const center = {
+    x: random(margin * 2, width - margin * 2),
+    y: random(margin * 2, height - margin * 2),
+  };
+  // vertici
   const vertices = [];
   for (let i = 0; i < numVertices; i++) {
     const angle = (TWO_PI / numVertices) * i;
+    const x = center.x + cos(angle) * radius * random(0, 2);
+    const y = center.y + sin(angle) * radius * random(0, 2);
 
-    const x = centerX + cos(angle) * radius * random(0, 2);
-    const y = centerY + sin(angle) * radius * random(0, 2);
-
+    // Assicurati che i vertici siano dentro i margini
     if (x < margin || x > width - margin || y < margin || y > height - margin) {
-      // Assicurati che i vertici siano dentro i margini
       return null; // Poligono non valido
     }
-
     vertices.push({ x: x, y: y });
   }
-
-  // Crea i segmenti connessi
+  // segmenti
   const segments = [];
   for (let i = 0; i < vertices.length; i++) {
-    const current = vertices[i];
     const next = vertices[(i + 1) % vertices.length]; // Il modulo assicura che l'ultimo si connetta al primo
 
-    segments.push(new segmentBoundary(current.x, current.y, next.x, next.y));
+    segments.push(
+      new segmentBoundary(vertices[i].x, vertices[i].y, next.x, next.y)
+    );
   }
-
   return segments;
 }
 
+// TEXT
+function textBoundaries(settings) {
+  if (boundaries.length > 0) boundaries = [];
+  console.log(settings);
+  let textBounds = font.textBounds(settings.value, 0, 0, settings.size);
+
+  // Genera i punti del testo
+  let textPoints = font.textToPoints(
+    settings.value,
+    (width - textBounds.w) / 2,
+    (height - textBounds.h) / 2 + textBounds.h,
+    settings.size,
+    {
+      sampleFactor: 0.25,
+      simplifyThreshold: 0,
+    }
+  );
+
+  for (let i = 0; i < textPoints.length - 1; i++) {
+    let current = textPoints[i];
+    let next = textPoints[i + 1];
+
+    let segment = new segmentBoundary(current.x, current.y, next.x, next.y);
+    boundaries.push(segment);
+  }
+}
+
+///////////////////////////////
 function particleGenerate() {
   particles = [];
   coolors = [];
@@ -173,8 +203,7 @@ function particleGenerate() {
     particles.push(p);
   }
 }
-
-////////////
+///////////////////////////////
 
 function draw() {
   // background(0);
@@ -242,12 +271,13 @@ function draw() {
         let remapCoords = [];
         let keyPointIndex = 0; //serve per scrivere il testo - il numero di dito
         for (let i = 0; i < hand.length; i++) {
-          const x = offsetX + (1 - hand[i].x) * videoSize.w * scaleFactor; //1- per effetto specchio
+          const x = offsetX + (1 - hand[i].x) * videoSize.w * scaleFactor; //1-x per effetto specchio
           const y = offsetY + hand[i].y * videoSize.h * scaleFactor;
 
           fill(255);
           ellipse(x, y, 5, 5);
 
+          // testo che identifica il numero di ciascun dito
           // push();
           // fill(175, 100);
           // translate(x, y);
@@ -269,11 +299,18 @@ function draw() {
           y: (remapCoords[4].y + remapCoords[8].y) / 2,
         };
 
-        if (angle !== null && angle < 20) {
-          // Disegna evidenza visiva
+        if (
+          (angle !== null && angle < 20) || //se l'angolo tra le tre dita è minore di 20°
+          dist(
+            remapCoords[4].x, //se la distanza tra i due punti è minore di 20 px
+            remapCoords[4].y,
+            remapCoords[8].x,
+            remapCoords[8].y
+          ) <= 20
+        ) {
           fill(255, 100);
-          ellipse(remapCoords[8].x, remapCoords[8].y, 20, 20);
-          ellipse(remapCoords[4].x, remapCoords[4].y, 20, 20);
+          ellipse(remapCoords[8].x, remapCoords[8].y, 25, 25);
+          ellipse(remapCoords[4].x, remapCoords[4].y, 25, 25);
 
           // Se non stai già trascinando, verifica se il pinch è vicino a una particella
           if (!isDragging) {
@@ -286,7 +323,6 @@ function draw() {
               }
             }
           } else if (pM && prevPinch) {
-            // Se stai trascinando, applica il delta movimento
             const dx = pinchCenter.x - prevPinch.x;
             const dy = pinchCenter.y - prevPinch.y;
             pM.pos.x += dx;
@@ -295,7 +331,7 @@ function draw() {
             prevPinch = { ...pinchCenter };
           }
         } else {
-          // Se l'angolo si apre, termina il trascinamento
+          //se esco dalla posizione di pinch
           isDragging = false;
           prevPinch = null;
         }
@@ -319,6 +355,9 @@ function mousePressed() {
   }
 }
 
+//////////////////////////////////////////
+// UTILITIES
+// Funzione per calcolare se due segmenti si intersecano
 function segmentIntersect(a1, a2, b1, b2) {
   let den = (a1.x - a2.x) * (b1.y - b2.y) - (a1.y - a2.y) * (b1.x - b2.x);
   if (den === 0) return false;

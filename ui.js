@@ -84,16 +84,30 @@ function poligonSettings(formEl) {
 
 // TEXT FORM
 function textSettings(formEl) {
-  const text = this.querySelector("input[type='text']").value;
-  const size = Number(this.querySelector("input[type='number']").value);
+  const text =
+    formEl.querySelector("input[type='text']").value ||
+    formEl.querySelector("input[type='text']").placeholder;
+  const size = Number(
+    formEl.querySelector("input[type='number']").value ||
+      formEl.querySelector("input[type='number']").placeholder
+  );
 
   console.log("Text Form Values:", { text, size });
 
   settings.mode = "text";
   settings.settings = {
-    value: text || text.placeholder,
-    size: size || size.placeholder,
+    value: text,
+    size: size,
   };
+
+  if (boundaries.length > 0) {
+    boundaries = [];
+  }
+  textBoundaries(settings.settings);
+  if (particles.length > 0) {
+    particles = [];
+  }
+  particleGenerate();
 }
 
 // /////////////
