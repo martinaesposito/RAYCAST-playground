@@ -3,7 +3,7 @@ class particle {
     this.c = c;
     this.pos = createVector(x, y);
     this.rays = [];
-    for (let a = 0; a < 360; a += 0.5) {
+    for (let a = 0; a < 360; a += 0.25) {
       //creo un raggio ogni 10 degrees
       this.rays.push(new ray(this.pos, radians(a)));
     }
@@ -36,14 +36,6 @@ class particle {
     }
   }
 
-  show() {
-    fill(this.c);
-    ellipse(this.pos.x, this.pos.y, 1);
-    for (let ray of this.rays) {
-      ray.show();
-    }
-  }
-
   cast(boundaries) {
     for (let ray of this.rays) {
       let closest = null;
@@ -62,7 +54,7 @@ class particle {
       }
 
       if (closest) {
-        strokeWeight(0.2);
+        strokeWeight(0.1);
         stroke(this.c);
         line(this.pos.x, this.pos.y, closest.x, closest.y);
       }
