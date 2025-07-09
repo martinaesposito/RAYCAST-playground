@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>RAYCAST PLAYGROUND</title>
+
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <!-- p5 -->
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/p5.sound.min.js"></script>
+
+    <!-- handlandmark -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="detection.js" defer></script>
+  </head>
+
+  <body>
+    <div id="title">RAYCAST PLAYGROUND</div>
+
+    <div id="UI" class="flex-col">
+      <!-- MODALITà -->
+      <div class="flex-col">
+        <!-- SEGMENTS -->
+        <form class="form active flex-col field-box" id="segments-form">
+          <p class="mode-title">SEGMENTS</p>
+          <div class="form-content flex-col">
+            <div class="field">
+              <label>minlength</label>
+              <input type="number" placeholder="50" />
+            </div>
+            <div class="field">
+              <label>maxlength</label>
+              <input type="number" placeholder="300" />
+            </div>
+            <div class="field">
+              <label>number</label>
+              <input type="number" placeholder="8" />
+            </div>
+
+            <button type="submit">render</button>
+          </div>
+        </form>
+
+        <!-- POLIGONS -->
+        <form class="form flex-col field-box" id="polygons-form">
+          <p class="mode-title">POLYGONS</p>
+          <div class="form-content flex-col hidden">
+            <div class="field">
+              <label>minvertex</label>
+              <input type="number" placeholder="5" />
+            </div>
+            <div class="field">
+              <label>maxvertex</label>
+              <input type="number" placeholder="10" />
+            </div>
+            <div class="field">
+              <label>number</label>
+              <input type="number" placeholder="8" />
+            </div>
+
+            <button type="submit">render</button>
+          </div>
+        </form>
+
+        <!-- TEXT -->
+        <form class="form flex-col field-box" id="text-form">
+          <p class="mode-title">TEXT</p>
+          <div class="form-content flex-col hidden">
+            <div class="field">
+              <label>text</label>
+              <input type="text" placeholder="Hello :)" />
+            </div>
+            <div class="field">
+              <label>fontsize</label>
+              <input type="number" placeholder="24" />
+            </div>
+            <button type="submit">render</button>
+          </div>
+        </form>
+
+        <!-- TOGGLES -->
+        <div class="field-box flex-col">
+          <!-- movements -->
+          <div class="field">
+            <label>move polygons</label>
+            <label class="switch">
+              <input type="checkbox" id="move-boundaries" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="field">
+            <label>move particles</label>
+            <label class="switch">
+              <input type="checkbox" id="move-particles" />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <!-- camera -->
+          <div class="field">
+            <label>camera input</label>
+            <label class="switch">
+              <input type="checkbox" id="toggle-camera" checked />
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Download button -->
+      <button id="download">download</button>
+    </div>
+
+    <!-- Video sotto il canvas -->
+    <video id="capture" autoplay muted playsinline></video>
+
+    <script src="boundary.js"></script>
+    <script src="ray.js"></script>
+    <script src="particle.js"></script>
+    <script src="ui.js"></script>
+    <script src="sketch.js"></script>
+  </body>
+</html>
