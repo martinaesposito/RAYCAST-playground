@@ -35,7 +35,7 @@
   </head>
 
   <body>
-    <div id="title">RAYCAST PLAYGROUND</div>
+    <div id="title"><i>RAY</i>CAST PLAYGROUND</div>
 
     <div id="UI" class="flex-col">
       <!-- MODALITà -->
@@ -108,6 +108,7 @@
 
         <!-- TOGGLES -->
         <div class="field-box flex-col">
+          <p class="mode-title">Additional options</p>
           <!-- movements -->
           <div class="field">
             <label>move boundaries</label>
@@ -127,11 +128,12 @@
           <div class="field">
             <label>camera input</label>
             <label class="switch">
-              <input type="checkbox" id="toggle-camera" checked />
+              <input type="checkbox" id="toggle-camera" />
               <span class="slider round"></span>
             </label>
           </div>
         </div>
+        <div class="field-box" id="instructions-btn"><i>instructions</i></div>
       </div>
 
       <!-- Download button -->
@@ -140,6 +142,11 @@
 
     <!-- Video sotto il canvas -->
     <video id="capture" autoplay muted playsinline></video>
+
+    <!-- instructions -->
+    <div id="instructions-ctn" class="flex-col hidden">
+      <div id="instructions" class="field-box">instructions</div>
+    </div>
 
     <script src="boundary.js"></script>
     <script src="ray.js"></script>

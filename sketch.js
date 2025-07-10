@@ -5,7 +5,7 @@ let coolors = [];
 let pM = null;
 
 const margin = 25;
-const numParticles = 5;
+const numParticles = 6;
 
 const palette = [
   "#FF1493",
@@ -53,7 +53,7 @@ function setup() {
 
 // SEGMENTI
 function segmentsBoundaries(settings) {
-  if (boundaries.length > 0) boundaries = [];
+  // if (boundaries.length > 0) boundaries = [];
   console.log(settings);
   //applico la stessa logica dei rays ai boundaries per disegnarli in modo che non si intersechino
   while (boundaries.length < settings.number) {
@@ -88,7 +88,7 @@ function segmentsBoundaries(settings) {
 
 // POLIGONI
 function polygonBoundaries(settings) {
-  if (boundaries.length > 0) boundaries = []; //se esistono già dei boundaries (es. segments) svuota l'array
+  // if (boundaries.length > 0) boundaries = []; //se esistono già dei boundaries (es. segments) svuota l'array
 
   let polygonCount = 0; // Conta i poligoni generati
 
@@ -158,22 +158,20 @@ function generatePolygon(numVertices, radius) {
 
 // TEXT
 function textBoundaries(settings) {
-  if (boundaries.length > 0) boundaries = [];
-  console.log(settings);
   let textBounds = font.textBounds(settings.value, 0, 0, settings.size);
 
   // Genera i punti del testo
   let textPoints = font.textToPoints(
     settings.value,
     (width - textBounds.w) / 2,
-    (height - textBounds.h) / 2 + textBounds.h,
+    height / 2 + textBounds.h / 3,
     settings.size,
     {
       sampleFactor: 0.25,
-      simplifyThreshold: 0,
     }
   );
 
+  console.log(textPoints);
   for (let i = 0; i < textPoints.length - 1; i++) {
     let current = textPoints[i];
     let next = textPoints[i + 1];
@@ -208,8 +206,9 @@ function particleGenerate() {
 function draw() {
   // background(0);
   clear();
+  // sfondo leggermente opaco - che permette di vedere il video input quando viene scritto
   push();
-  fill(0, 225);
+  fill(0, 200);
   rect(0, 0, width, height);
   pop();
 

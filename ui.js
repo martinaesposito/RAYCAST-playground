@@ -3,7 +3,7 @@ let settings = {
   settings: {},
 };
 
-let showCamera = false;
+let showCamera;
 
 // FORM SUBMIT
 document.querySelectorAll(".form").forEach((formEl) => {
@@ -113,7 +113,7 @@ function textSettings(formEl) {
 // /////////////
 
 // CAMERA TOGGLE
-showCamera = true;
+// showCamera = true;
 document
   .getElementById("toggle-camera")
   .addEventListener("change", function () {
@@ -143,6 +143,7 @@ forms.forEach((e, i) => {
       el.classList.add("hidden");
       if (i == 0) segmentSettings(forms[i]);
       else if (i == 1) poligonSettings(forms[i]);
+      else if (i == 2) textSettings(forms[i]);
     });
     e.classList.add("active");
     formsContent[i].classList.remove("hidden"); //tranne quello cliccato
@@ -152,4 +153,8 @@ forms.forEach((e, i) => {
 //
 window.addEventListener("resize", () => {
   location.reload();
+});
+
+document.getElementById("instructions-btn").addEventListener("click", () => {
+  document.getElementById("instructions-ctn").classList.toggle("hidden");
 });

@@ -1,6 +1,3 @@
-const nScale = 0.005;
-const moveRange = 2;
-
 class segmentBoundary {
   constructor(x1, y1, x2, y2) {
     this.a = createVector(x1, y1);
@@ -9,12 +6,26 @@ class segmentBoundary {
     this.noiseOffset = createVector(random(1000), random(1000));
   }
   move(t) {
-    this.a.x += (noise(this.noiseOffset.x + t * nScale) - 0.5) * moveRange;
-    this.a.y += (noise(this.noiseOffset.y + t * nScale) - 0.5) * moveRange;
-    this.b.x += (noise(this.noiseOffset.x + t * nScale) - 0.5) * moveRange;
-    this.b.y += (noise(this.noiseOffset.y + t * nScale) - 0.5) * moveRange;
+    const t1 = t * 0.0025;
+    const t2 = (t + 10000) * 0.0025; //creo uno shift così da dare due noise leggermente diversi al primo e al secondo punto
 
-    // Limiti agli spostamenti
+    this.a = p5.Vector.add(
+      this.a,
+      createVector(
+        (noise(this.noiseOffset.x + t1) - 0.5) * 2,
+        (noise(this.noiseOffset.y + t1) - 0.5) * 2
+      )
+    );
+
+    this.b = p5.Vector.add(
+      this.b,
+      createVector(
+        (noise(this.noiseOffset.x + t2) - 0.5) * 2,
+        (noise(this.noiseOffset.y + t2) - 0.5) * 2
+      )
+    );
+
+    // Limito i punti entro i margini della canvas
     this.a.x = constrain(this.a.x, margin, width - margin);
     this.a.y = constrain(this.a.y, margin, height - margin);
     this.b.x = constrain(this.b.x, margin, width - margin);
@@ -23,8 +34,7 @@ class segmentBoundary {
 
   show() {
     stroke(255);
-    stroke(255);
-    strokeWeight(1);
+    strokeWeight(0.5);
     line(this.a.x, this.a.y, this.b.x, this.b.y);
   }
 }
