@@ -1,4 +1,3 @@
-let b, r, p, c;
 let boundaries = [];
 
 let particles = [];
@@ -8,7 +7,6 @@ const numParticles = 6; //definisco un numero di partenza di particellle
 
 // text
 let font;
-let textPoints = [];
 
 // video and finger points coordinates
 let scaleFactor;
@@ -55,7 +53,7 @@ function setup() {
 // SEGMENTI
 function segmentsBoundaries(settings) {
   // if (boundaries.length > 0) boundaries = [];
-  console.log(settings);
+  // console.log(settings);
   //applico la stessa logica dei rays ai boundaries per disegnarli in modo che non si intersechino
   while (boundaries.length < settings.number) {
     let x1 = random(margin, width - margin);
@@ -188,14 +186,11 @@ function textBoundaries(settings) {
 ///////////////////////////////
 function particleGenerate() {
   particles = [];
-  coolors = [];
 
-  console.log(settings.colors);
+  // console.log(settings.colors);
   if (settings.colors.mode === "monochrome") {
     // Modalità monocromatica - tutte le particelle hanno lo stesso colore
     for (let i = 0; i < numParticles; i++) {
-      coolors.push(settings.colors.particles);
-
       const p = new particle(
         random(margin, width - margin),
         random(margin, height - margin),
@@ -204,14 +199,13 @@ function particleGenerate() {
       particles.push(p);
     }
   } else {
-    console.log(settings.colors);
+    // console.log(settings.colors);
     // Modalità multicolore - usa la palette selezionata
     let availableColors = [...settings.colors.palette];
 
     for (let i = 0; i < numParticles && availableColors.length > 0; i++) {
       const index = floor(random(availableColors.length));
       const c = availableColors.splice(index, 1)[0];
-      coolors.push(c);
 
       const p = new particle(
         random(margin, width - margin),
@@ -266,17 +260,35 @@ function draw() {
   image(raysBuffer, 0, 0);
 
   //VIDEO
+  handleVideoInput();
+}
+
+//////////////
+let cachedVideoSize = null,
+  cachedScaleFactor = null;
+let lastVideoWidth = 0,
+  lastVideoHeight = 0;
+
+// VIDEO
+function handleVideoInput() {
   if (!showCamera || !videoElement) {
     document.getElementById("capture").classList.add("hidden");
     return;
-  } else {
-    document.getElementById("capture").classList.remove("hidden");
+  }
+
+  if (
+    videoElement.videoWidth !== lastVideoWidth ||
+    videoElement.videoHeight !== lastVideoHeight
+  ) {
+    lastVideoWidth = videoElement.videoWidth;
+    lastVideoHeight = videoElement.videoHeight;
+
+    console.log("hey");
 
     const videoMoreHorizontalThanScreen =
       videoElement.videoWidth / videoElement.videoHeight > width / height;
 
-    //calcolo le dimensioni del video proporzionalmente alle dimensioni dello schermo
-    videoSize = {
+    cachedVideoSize = {
       h: videoMoreHorizontalThanScreen
         ? height
         : (width / videoElement.videoWidth) * videoElement.videoHeight,
@@ -284,88 +296,88 @@ function draw() {
         ? (height / videoElement.videoHeight) * videoElement.videoWidth
         : width,
     };
-    scaleFactor =
-      videoSize.w / videoSize.h > width / height
-        ? height / videoSize.h
-        : width / videoSize.w;
 
-    const offsetX = (width - videoSize.w * scaleFactor) / 2;
-    const offsetY = (height - videoSize.h * scaleFactor) / 2;
+    cachedScaleFactor =
+      cachedVideoSize.w / cachedVideoSize.h > width / height
+        ? height / cachedVideoSize.h
+        : width / cachedVideoSize.w;
+  }
 
-    // handlandmark
-    if (detections.multiHandLandmarks !== undefined) {
-      for (const hand of detections.multiHandLandmarks) {
-        let remapCoords = [];
-        let keyPointIndex = 0; //serve per scrivere il testo - il numero di dito
-        for (let i = 0; i < hand.length; i++) {
-          const x = offsetX + (1 - hand[i].x) * videoSize.w * scaleFactor; //1-x per effetto specchio
-          const y = offsetY + hand[i].y * videoSize.h * scaleFactor;
+  // handlandmark
+  if (detections.multiHandLandmarks !== undefined) {
+    for (const hand of detections.multiHandLandmarks) {
+      let remapCoords = [];
+      let keyPointIndex = 0; //serve per scrivere il testo - il numero di dito
+      for (let i = 0; i < hand.length; i++) {
+        const x = (1 - hand[i].x) * cachedVideoSize.w * cachedScaleFactor; //1-x per effetto specchio
+        const y = hand[i].y * cachedVideoSize.h * cachedScaleFactor;
 
-          fill(255);
-          ellipse(x, y, 5, 5);
+        fill(255);
+        ellipse(x, y, 5, 5);
 
-          // testo che identifica il numero di ciascun dito
-          // push();
-          // fill(175, 100);
-          // translate(x, y);
-          // scale(-1, 1);
-          // text(keyPointIndex, 0, 0);
-          // pop();
-          keyPointIndex++;
-          remapCoords.push({ x: x, y: y });
-        }
+        // testo che identifica il numero di ciascun dito
+        // push();
+        // fill(175, 100);
+        // translate(x, y);
+        // scale(-1, 1);
+        // text(keyPointIndex, 0, 0);
+        // pop();
+        keyPointIndex++;
+        remapCoords.push({ x: x, y: y });
+      }
 
-        const angle = calculateAngle(
-          remapCoords[8],
-          remapCoords[5],
-          remapCoords[4]
-        );
-        //controllo l'angolo tra pollice (4) e indice(8) per vedere se fanno pinch
-        const pinchCenter = {
-          x: (remapCoords[4].x + remapCoords[8].x) / 2,
-          y: (remapCoords[4].y + remapCoords[8].y) / 2,
-        };
+      const angle = calculateAngle(
+        remapCoords[8],
+        remapCoords[5],
+        remapCoords[4]
+      );
+      //controllo l'angolo tra pollice (4) e indice(8) per vedere se fanno pinch
+      const pinchCenter = {
+        x: (remapCoords[4].x + remapCoords[8].x) / 2,
+        y: (remapCoords[4].y + remapCoords[8].y) / 2,
+      };
 
-        if (
-          (angle !== null && angle < 20) || //se l'angolo tra le tre dita è minore di 20°
-          dist(
-            remapCoords[4].x, //se la distanza tra i due punti è minore di 20 px
-            remapCoords[4].y,
-            remapCoords[8].x,
-            remapCoords[8].y
-          ) <= 20
-        ) {
-          fill(255, 100);
-          ellipse(remapCoords[8].x, remapCoords[8].y, 25, 25);
-          ellipse(remapCoords[4].x, remapCoords[4].y, 25, 25);
+      if (
+        (angle !== null && angle < 20) || //se l'angolo tra le tre dita è minore di 20°
+        dist(
+          remapCoords[4].x, //se la distanza tra i due punti è minore di 20 px
+          remapCoords[4].y,
+          remapCoords[8].x,
+          remapCoords[8].y
+        ) <= 20
+      ) {
+        fill(255, 100);
+        ellipse(remapCoords[8].x, remapCoords[8].y, 25, 25);
+        ellipse(remapCoords[4].x, remapCoords[4].y, 25, 25);
 
-          // Se non stai già trascinando, verifica se il pinch è vicino a una particella
-          if (!isDragging) {
-            for (let p of particles) {
-              if (dist(pinchCenter.x, pinchCenter.y, p.pos.x, p.pos.y) <= 20) {
-                pM = p;
-                isDragging = true;
-                prevPinch = { ...pinchCenter };
-                break;
-              }
+        // Se non stai già trascinando, verifica se il pinch è vicino a una particella
+        if (!isDragging) {
+          for (let p of particles) {
+            if (dist(pinchCenter.x, pinchCenter.y, p.pos.x, p.pos.y) <= 20) {
+              pM = p;
+              isDragging = true;
+              prevPinch = { ...pinchCenter };
+              break;
             }
-          } else if (pM && prevPinch) {
-            const dx = pinchCenter.x - prevPinch.x;
-            const dy = pinchCenter.y - prevPinch.y;
-            pM.pos.x += dx;
-            pM.pos.y += dy;
-
-            prevPinch = { ...pinchCenter };
           }
-        } else {
-          //se esco dalla posizione di pinch
-          isDragging = false;
-          prevPinch = null;
+        } else if (pM && prevPinch) {
+          const dx = pinchCenter.x - prevPinch.x;
+          const dy = pinchCenter.y - prevPinch.y;
+          pM.pos.x += dx;
+          pM.pos.y += dy;
+
+          prevPinch = { ...pinchCenter };
         }
+      } else {
+        //se esco dalla posizione di pinch
+        isDragging = false;
+        prevPinch = null;
       }
     }
   }
 }
+
+////////////////
 
 function mousePressed() {
   if (mouseX < windowWidth * 0.8) {
@@ -388,7 +400,6 @@ function mousePressed() {
 
     pM = new particle(mouseX, mouseY, newColor);
     particles.push(pM);
-    coolors.push(newColor); // Aggiungi il colore anche all'array coolors per consistenza
   }
 }
 

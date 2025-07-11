@@ -237,6 +237,7 @@ document
   .getElementById("toggle-camera")
   .addEventListener("change", function () {
     showCamera = this.checked;
+    document.getElementById("capture").classList.toggle("hidden");
     console.log("Camera Toggle:", showCamera);
   });
 

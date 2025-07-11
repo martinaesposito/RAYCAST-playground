@@ -64,29 +64,32 @@ class particle {
         pg.line(this.pos.x, this.pos.y, closest.x, closest.y);
 
         // RIFLESSIONE
+        if (record < 500) {
+          const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vettore della direzione con cui il raggio colpisce la superficie
+          let normal = createVector(
+            -(b.b.y - b.a.y),
+            b.b.x - b.a.x
+          ).normalize(); // vettore perpendicolare alla superficie colpita
+          const dot = incidence.dot(normal); //serve per calcolare il rapporto tra la direzione del raggio incidente e il vettore normale perpendicolare al boundary
+          if (dot > 0) normal.mult(-1);
+          const reflection = p5.Vector.sub(
+            //calcolo il vettore corrispondente alla riflessione - per cui sottraggo al vettore incidenza un vettore
+            incidence,
+            p5.Vector.mult(normal, 2 * dot)
+          );
 
-        const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vettore della direzione con cui il raggio colpisce la superficie
+          // Estendi riflesso per disegnarlo
+          const reflectedEnd = p5.Vector.add(
+            closest,
+            p5.Vector.mult(reflection, 1000)
+          ); // lunghezza riflesso
+          alpha(0.05);
 
-        let normal = createVector(-(b.b.y - b.a.y), b.b.x - b.a.x).normalize(); // vettore perpendicolare alla superficie colpita
-        const dot = incidence.dot(normal); //serve per calcolare il rapporto tra la direzione del raggio incidente e il vettore normale perpendicolare al boundary
-        if (incidence.dot(normal) > 0) normal.mult(-1);
-        const reflection = p5.Vector.sub(
-          //calcolo il vettore corrispondente alla riflessione - per cui sottraggo al vettore incidenza un vettore
-          incidence,
-          p5.Vector.mult(normal, 2 * dot)
-        );
-
-        // Estendi riflesso per disegnarlo
-        const reflectedEnd = p5.Vector.add(
-          closest,
-          p5.Vector.mult(reflection, 1000)
-        ); // lunghezza riflesso
-        alpha(0.05);
-
-        let c = color(this.c);
-        c.setAlpha(175);
-        pg.stroke(c);
-        pg.line(closest.x, closest.y, reflectedEnd.x, reflectedEnd.y);
+          let c = color(this.c);
+          c.setAlpha(175);
+          pg.stroke(c);
+          pg.line(closest.x, closest.y, reflectedEnd.x, reflectedEnd.y);
+        }
       }
     }
   }
