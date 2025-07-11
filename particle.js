@@ -30,7 +30,6 @@ class particle {
 
   show() {
     fill(this.c);
-    // console.log(this.c);
     ellipse(this.pos.x, this.pos.y, 0.1);
     // for (let ray of this.rays) {
     //   ray.show(this.c);
@@ -38,6 +37,9 @@ class particle {
   }
 
   cast(boundaries, pg) {
+    const maxBounces = 2; // o 3
+    const minLength = 30; // riflessioni solo se il raggio è abbastanza lungo
+
     for (let ray of this.rays) {
       let closest = null;
       let record = Infinity; //inizializzo il record iniziale a infinito per ciascun boundary

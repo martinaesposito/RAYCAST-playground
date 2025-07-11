@@ -94,7 +94,7 @@ function segmentSettings(formEl) {
   if (particles.length > 0) {
     particles = [];
   }
-  particleGenerate(settings.colors);
+  particleGenerate();
 }
 
 // POLYGONS FORM

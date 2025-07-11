@@ -1,7 +1,6 @@
 let b, r, p, c;
 let boundaries = [];
 
-let coolors = [];
 let particles = [];
 
 const margin = 25; //definisco un area entro cui sia le particelle che i boundaries dovranno stare
@@ -37,7 +36,7 @@ function setup() {
 
   if (settings) {
     segmentsBoundaries(settings.settings);
-    particleGenerate(settings.colors);
+    particleGenerate();
   }
 
   // creo la mano a partire dai risultati di detection
@@ -177,6 +176,9 @@ function textBoundaries(settings) {
   for (let i = 0; i < textPoints.length - 1; i++) {
     let current = textPoints[i];
     let next = textPoints[i + 1];
+    let d = dist(current.x, current.y, next.x, next.y);
+
+    if (d > 15) continue;
 
     let segment = new segmentBoundary(current.x, current.y, next.x, next.y);
     boundaries.push(segment);

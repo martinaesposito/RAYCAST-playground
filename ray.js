@@ -40,7 +40,6 @@ class ray {
     let t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
     let u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 
-    // console.log(t, u);
     if (t < 1 && t > 0 && u > 0) {
       let pt = createVector();
       pt.x = x1 + t * (x2 - x1);
