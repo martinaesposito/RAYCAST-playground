@@ -1,45 +1,41 @@
 let b, r, p, c;
-let particles = [];
 let boundaries = [];
+
 let coolors = [];
-let pM = null;
+let particles = [];
 
-const margin = 25;
-const numParticles = 6;
+const margin = 25; //definisco un area entro cui sia le particelle che i boundaries dovranno stare
+const numParticles = 6; //definisco un numero di partenza di particellle
 
-// const palette = [
-//   "#FF1493",
-//   "#FF4500",
-//   "#00FA9A",
-//   "#E6FF00",
-//   "#1E90FF",
-//   "#FF8C00",
-//   "#FFFFFF",
-// ];
+// text
 let font;
 let textPoints = [];
 
+// video and finger points coordinates
 let scaleFactor;
 let remapCoords = [];
 
-let prevPinch = null;
+let pM;
+let prevPinch;
 let isDragging = false;
 
 ///////////////////////////////
 function preload() {
-  font = loadFont("AVHersheySimplexLight.ttf");
+  font = loadFont("AVHersheySimplexLight.ttf"); //FONT
 }
 
 function setup() {
   createCanvas((windowWidth / 5) * 4, windowHeight);
   noStroke();
 
+  // pick the color values
   multicoloredSettings(document.getElementById("multicolored-form"));
-  // genero i boundary
+  // generte boundaries
   segmentSettings(document.getElementById("segments-form"));
+
   if (settings) {
     segmentsBoundaries(settings.settings);
-    particleGenerate();
+    particleGenerate(settings.colors);
   }
 
   // creo la mano a partire dai risultati di detection
@@ -230,6 +226,8 @@ function draw() {
   // rect(0, 0, width, height);
   // pop();
 
+  // clear();
+
   for (let b of boundaries) {
     b.show();
   }
@@ -240,8 +238,10 @@ function draw() {
   }
 
   particles.forEach((e) => {
-    e.show();
+    blendMode(ADD); //così da avere un effetto quasi blur nella riflessione
     e.cast(boundaries);
+    blendMode(BLEND);
+    e.show();
   });
 
   if (document.getElementById("move-boundaries").checked == true) {

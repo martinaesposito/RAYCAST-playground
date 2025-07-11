@@ -10,8 +10,8 @@ class ray {
     this.dir.normalize();
   }
 
-  show() {
-    stroke(255);
+  show(c) {
+    stroke(c);
     push();
     translate(this.pos.x, this.pos.y); //traslo al punto di origine
     line(0, 0, this.dir.x, this.dir.y); //i multiply the rayf or ten so that it's visible

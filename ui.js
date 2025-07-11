@@ -1,3 +1,9 @@
+let settings = {
+  mode: "",
+  settings: {},
+  colors: {},
+};
+
 // PALETTE DEFINITIONS
 const COLOR_PALETTES = {
   vibrant: [
@@ -47,12 +53,6 @@ const COLOR_PALETTES = {
   ],
 };
 
-let settings = {
-  mode: "",
-  settings: {},
-  colors: {},
-};
-
 let showCamera;
 
 // FORM SUBMIT
@@ -80,8 +80,6 @@ function segmentSettings(formEl) {
     number: Number(inputs[2].value || inputs[2].placeholder),
   };
 
-  console.log("Segments Form Values:", values);
-
   settings.mode = "segments";
   settings.settings = {
     min: values.min,
@@ -96,7 +94,7 @@ function segmentSettings(formEl) {
   if (particles.length > 0) {
     particles = [];
   }
-  particleGenerate();
+  particleGenerate(settings.colors);
 }
 
 // POLYGONS FORM

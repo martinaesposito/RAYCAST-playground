@@ -41,22 +41,34 @@
       <div class="flex-col gap">
         <!-- MODALITà -->
         <div class="flex-col field-box" id="modalità">
-          <p class="mode-title">MODALITà</p>
+          <p class="mode-title">MODE</p>
           <!-- SEGMENTS -->
           <form class="form active flex-col field-box" id="segments-form">
             <p class="mode-title">SEGMENTS</p>
             <div class="form-content flex-col gap">
               <div class="field">
                 <label>minlength</label>
-                <input type="number" placeholder="50" class="input" />
+                <input
+                  type="number"
+                  placeholder="50"
+                  class="input"
+                  min="0"
+                  max="500"
+                />
               </div>
               <div class="field">
                 <label>maxlength</label>
-                <input type="number" placeholder="300" class="input" />
+                <input
+                  type="number"
+                  placeholder="150"
+                  class="input"
+                  min="0"
+                  max="2000"
+                />
               </div>
               <div class="field">
                 <label>number</label>
-                <input type="number" placeholder="8" class="input" />
+                <input type="number" placeholder="12" class="input" min="0" />
               </div>
 
               <button type="submit">apply</button>
@@ -69,19 +81,19 @@
             <div class="form-content flex-col gap hidden">
               <div class="field">
                 <label>minvertex</label>
-                <input type="number" placeholder="3" class="input" />
+                <input type="number" placeholder="3" class="input" min="0" />
               </div>
               <div class="field">
                 <label>maxvertex</label>
-                <input type="number" placeholder="6" class="input" />
+                <input type="number" placeholder="6" class="input" min="0" />
               </div>
               <div class="field">
                 <label>minradius</label>
-                <input type="number" placeholder="50" class="input" />
+                <input type="number" placeholder="50" class="input" min="0" />
               </div>
               <div class="field">
                 <label>maxradius</label>
-                <input type="number" placeholder="250" class="input" />
+                <input type="number" placeholder="250" class="input" min="0" />
               </div>
               <div class="field">
                 <label>number</label>
@@ -197,7 +209,10 @@
 
     <!-- instructions -->
     <div id="instructions-ctn" class="flex-col hidden">
-      <div id="instructions" class="field-box">instructions</div>
+      <div id="instructions" class="field-box">
+        <p>instructions</p>
+        <p>segments length</p>
+      </div>
     </div>
 
     <script src="boundary.js"></script>
