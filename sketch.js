@@ -19,6 +19,8 @@ let pM;
 let prevPinch;
 let isDragging = false;
 
+let raysBuffer; //create graphics per renderizzare i raggi e ottimizzare la performance dello sketch
+
 ///////////////////////////////
 function preload() {
   font = loadFont("AVHersheySimplexLight.ttf"); //FONT
@@ -44,6 +46,9 @@ function setup() {
       new Hand(hand);
     }
   }
+
+  raysBuffer = createGraphics(width, height);
+  raysBuffer.blendMode(ADD); // solo qui
 }
 
 ///////////////////////////////
@@ -219,6 +224,7 @@ function particleGenerate() {
 
 function draw() {
   background(settings.colors.background || 0);
+  raysBuffer.clear();
   // clear();
   // sfondo leggermente opaco - che permette di vedere il video input quando viene scritto
   // push();
@@ -232,15 +238,15 @@ function draw() {
     b.show();
   }
 
-  if (pM && mouseIsPressed) {
-    //emissione di luce in corrispondenza del mouse
+  // Particle che segue il mouse - until it's released
+  if (pM && mouseIsPressed && mouseX < windowWidth * 0.8) {
     pM.update(mouseX, mouseY);
   }
 
   particles.forEach((e) => {
-    blendMode(ADD); //così da avere un effetto quasi blur nella riflessione
-    e.cast(boundaries);
-    blendMode(BLEND);
+    // blendMode(ADD); //così da avere un effetto quasi blur nella riflessione
+    e.cast(boundaries, raysBuffer);
+    // blendMode(BLEND); //ripristino modalità di fusione
     e.show();
   });
 
@@ -255,6 +261,8 @@ function draw() {
       p.move(frameCount);
     }
   }
+  image(raysBuffer, 0, 0);
+
   //VIDEO
   if (!showCamera || !videoElement) {
     document.getElementById("capture").classList.add("hidden");

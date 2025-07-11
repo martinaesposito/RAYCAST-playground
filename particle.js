@@ -3,8 +3,8 @@ class particle {
     this.c = c;
     this.pos = createVector(x, y);
     this.rays = [];
-    for (let a = 0; a < 360; a += 0.5) {
-      //creo un raggio ogni 10 degrees
+    for (let a = 0; a < 360; a += 0.75) {
+      //creo 360 raggi per particella, uno ad angolo
       this.rays.push(new ray(this.pos, radians(a)));
     }
     this.noiseOffset = createVector(random(1000), random(1000));
@@ -30,14 +30,14 @@ class particle {
 
   show() {
     fill(this.c);
-    console.log(this.c);
+    // console.log(this.c);
     ellipse(this.pos.x, this.pos.y, 0.1);
     // for (let ray of this.rays) {
     //   ray.show(this.c);
     // }
   }
 
-  cast(boundaries) {
+  cast(boundaries, pg) {
     for (let ray of this.rays) {
       let closest = null;
       let record = Infinity; //inizializzo il record iniziale a infinito per ciascun boundary
@@ -57,16 +57,17 @@ class particle {
       }
 
       if (closest) {
-        strokeWeight(0.1);
-        stroke(this.c);
-        line(this.pos.x, this.pos.y, closest.x, closest.y); //vettore incidente alla superficie
+        pg.stroke(this.c);
+        pg.strokeWeight(0.1);
+        pg.line(this.pos.x, this.pos.y, closest.x, closest.y);
 
-        // calcolo la riflessione
+        // RIFLESSIONE
 
-        const incidence = p5.Vector.sub(closest, this.pos).normalize();
+        const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vettore della direzione con cui il raggio colpisce la superficie
 
         let normal = createVector(-(b.b.y - b.a.y), b.b.x - b.a.x).normalize(); // vettore perpendicolare alla superficie colpita
-        const dot = incidence.dot(normal); //vettore della direzione con cui il raggio colpisce la superficie
+        const dot = incidence.dot(normal); //serve per calcolare il rapporto tra la direzione del raggio incidente e il vettore normale perpendicolare al boundary
+        if (incidence.dot(normal) > 0) normal.mult(-1);
         const reflection = p5.Vector.sub(
           //calcolo il vettore corrispondente alla riflessione - per cui sottraggo al vettore incidenza un vettore
           incidence,
@@ -79,7 +80,11 @@ class particle {
           p5.Vector.mult(reflection, 1000)
         ); // lunghezza riflesso
         alpha(0.05);
-        line(closest.x, closest.y, reflectedEnd.x, reflectedEnd.y);
+
+        let c = color(this.c);
+        c.setAlpha(175);
+        pg.stroke(c);
+        pg.line(closest.x, closest.y, reflectedEnd.x, reflectedEnd.y);
       }
     }
   }
