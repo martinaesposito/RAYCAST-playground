@@ -7,15 +7,15 @@ let pM = null;
 const margin = 25;
 const numParticles = 6;
 
-const palette = [
-  "#FF1493",
-  "#FF4500",
-  "#00FA9A",
-  "#E6FF00",
-  "#1E90FF",
-  "#FF8C00",
-  "#FFFFFF",
-];
+// const palette = [
+//   "#FF1493",
+//   "#FF4500",
+//   "#00FA9A",
+//   "#E6FF00",
+//   "#1E90FF",
+//   "#FF8C00",
+//   "#FFFFFF",
+// ];
 let font;
 let textPoints = [];
 
@@ -34,12 +34,13 @@ function setup() {
   createCanvas((windowWidth / 5) * 4, windowHeight);
   noStroke();
 
+  multicoloredSettings(document.getElementById("multicolored-form"));
   // genero i boundary
   segmentSettings(document.getElementById("segments-form"));
-  if (settings) segmentsBoundaries(settings.settings);
-
-  // genero le palline
-  particleGenerate();
+  if (settings) {
+    segmentsBoundaries(settings.settings);
+    particleGenerate();
+  }
 
   // creo la mano a partire dai risultati di detection
   if (detections.multiHandLandmarks !== undefined) {
@@ -186,31 +187,48 @@ function particleGenerate() {
   particles = [];
   coolors = [];
 
-  let availableColors = [...palette];
+  console.log(settings.colors);
+  if (settings.colors.mode === "monochrome") {
+    // Modalità monocromatica - tutte le particelle hanno lo stesso colore
+    for (let i = 0; i < numParticles; i++) {
+      coolors.push(settings.colors.particles);
 
-  for (let i = 0; i < numParticles && availableColors.length > 0; i++) {
-    const index = floor(random(availableColors.length));
-    const c = availableColors.splice(index, 1)[0]; // ogni volta toglie il colore appena assegnato
-    coolors.push(c);
+      const p = new particle(
+        random(margin, width - margin),
+        random(margin, height - margin),
+        settings.colors.particles
+      );
+      particles.push(p);
+    }
+  } else {
+    console.log(settings.colors);
+    // Modalità multicolore - usa la palette selezionata
+    let availableColors = [...settings.colors.palette];
 
-    const p = new particle(
-      random(margin, width - margin),
-      random(margin, height - margin),
-      c
-    );
-    particles.push(p);
+    for (let i = 0; i < numParticles && availableColors.length > 0; i++) {
+      const index = floor(random(availableColors.length));
+      const c = availableColors.splice(index, 1)[0];
+      coolors.push(c);
+
+      const p = new particle(
+        random(margin, width - margin),
+        random(margin, height - margin),
+        c
+      );
+      particles.push(p);
+    }
   }
 }
 ///////////////////////////////
 
 function draw() {
-  // background(0);
-  clear();
+  background(settings.colors.background || 0);
+  // clear();
   // sfondo leggermente opaco - che permette di vedere il video input quando viene scritto
-  push();
-  fill(0, 200);
-  rect(0, 0, width, height);
-  pop();
+  // push();
+  // fill(0, 200);
+  // rect(0, 0, width, height);
+  // pop();
 
   for (let b of boundaries) {
     b.show();
@@ -348,9 +366,19 @@ function mousePressed() {
       }
     }
 
-    c = random(palette);
-    pM = new particle(mouseX, mouseY, c);
+    // Segui la stessa logica dei settings per la selezione del colore
+    let newColor;
+    if (settings.colors.mode === "monochrome") {
+      // Modalità monocromatica - usa il colore delle particelle
+      newColor = settings.colors.particles;
+    } else {
+      // Modalità multicolore - usa un colore random dalla palette dei settings
+      newColor = random(settings.colors.palette);
+    }
+
+    pM = new particle(mouseX, mouseY, newColor);
     particles.push(pM);
+    coolors.push(newColor); // Aggiungi il colore anche all'array coolors per consistenza
   }
 }
 

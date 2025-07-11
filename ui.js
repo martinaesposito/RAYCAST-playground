@@ -1,6 +1,56 @@
+// PALETTE DEFINITIONS
+const COLOR_PALETTES = {
+  vibrant: [
+    "#FF1493",
+    "#FF4500",
+    "#00FA9A",
+    "#E6FF00",
+    "#1E90FF",
+    "#FF8C00",
+    "#FFFFFF",
+  ],
+  neon: [
+    "#FF073A",
+    "#39FF14",
+    "#FF10F0",
+    "#00FFFF",
+    "#FFFF00",
+    "#FF6600",
+    "#FFFFFF",
+  ],
+  pastel: [
+    "#FFB3BA",
+    "#FFDFBA",
+    "#FFFFBA",
+    "#BAFFC9",
+    "#BAE1FF",
+    "#E6BAFF",
+    "#FFFFFF",
+  ],
+  warm: [
+    "#FF6B6B",
+    "#FF8E53",
+    "#FF6B9D",
+    "#FFD93D",
+    "#6BCF7F",
+    "#4ECDC4",
+    "#FFFFFF",
+  ],
+  cool: [
+    "#4ECDC4",
+    "#45B7D1",
+    "#96CEB4",
+    "#FFEAA7",
+    "#DDA0DD",
+    "#87CEEB",
+    "#FFFFFF",
+  ],
+};
+
 let settings = {
   mode: "",
   settings: {},
+  colors: {},
 };
 
 let showCamera;
@@ -110,7 +160,78 @@ function textSettings(formEl) {
   particleGenerate();
 }
 
-// /////////////
+//////////////////////////
+
+// COLOR FORM SELECT
+const colorFormsContent = document.querySelectorAll(".color-form-content");
+const colorForms = document.querySelectorAll(".color-form");
+
+colorForms.forEach((e, i) => {
+  e.addEventListener("click", () => {
+    const wasAlreadyActive = e.classList.contains("active");
+    colorForms.forEach((f) => f.classList.remove("active"));
+    document.querySelectorAll(".color-form-content").forEach((el) => {
+      el.classList.add("hidden");
+      if (!wasAlreadyActive) {
+        if (i == 0) multicoloredSettings(colorForms[i]);
+        else if (i == 1) monochromeSettings(colorForms[i]);
+      }
+    });
+    e.classList.add("active");
+    colorFormsContent[i].classList.remove("hidden");
+  });
+});
+
+// MULTICOLORED SETTINGS
+function multicoloredSettings(formEl) {
+  settings.colors.mode = "multicolored";
+
+  const backgroundInput = formEl.querySelector("input[type='color']");
+  settings.colors.background =
+    backgroundInput.value || backgroundInput.placeholder;
+
+  const paletteSelect = formEl.querySelector("select");
+  settings.colors.palette =
+    COLOR_PALETTES[paletteSelect.value] || COLOR_PALETTES.vibrant;
+
+  console.log("Multicolored Settings:", settings.colors);
+  particleGenerate();
+}
+
+// MONOCHROME SETTINGS
+function monochromeSettings(formEl) {
+  const inputs = formEl.querySelectorAll("input");
+
+  const particlesColor = inputs[0].value || "#FFFFFF";
+  const backgroundColor = inputs[1].value || "#000000";
+
+  settings.colors.mode = "monochrome";
+  settings.colors.particles = particlesColor;
+  settings.colors.background = backgroundColor;
+
+  console.log("Monochrome Settings:", settings.colors);
+  particleGenerate();
+}
+
+// CHANGE MULTICOLOR
+document.getElementById("particle-multi").addEventListener("change", () => {
+  multicoloredSettings(document.getElementById("multicolored-form"));
+});
+
+document.getElementById("bg-multi").addEventListener("change", () => {
+  multicoloredSettings(document.getElementById("multicolored-form"));
+});
+
+// CHANGE monochrome
+document.getElementById("particle-mono").addEventListener("change", () => {
+  monochromeSettings(document.getElementById("monochrome-form"));
+});
+
+document.getElementById("bg-mono").addEventListener("change", () => {
+  monochromeSettings(document.getElementById("monochrome-form"));
+});
+
+//////////////////////////
 
 // CAMERA TOGGLE
 // showCamera = true;
@@ -137,13 +258,18 @@ const forms = document.querySelectorAll(".form");
 
 forms.forEach((e, i) => {
   e.addEventListener("click", () => {
+    const wasAlreadyActive = e.classList.contains("active");
+
     forms.forEach((f) => f.classList.remove("active"));
     document.querySelectorAll(".form-content").forEach((el, a) => {
       // nasconde tutti i contenuti
       el.classList.add("hidden");
-      if (i == 0) segmentSettings(forms[i]);
-      else if (i == 1) poligonSettings(forms[i]);
-      else if (i == 2) textSettings(forms[i]);
+      if (!wasAlreadyActive) {
+        resetInputsToPlaceholder();
+        if (i == 0) segmentSettings(forms[i]);
+        else if (i == 1) poligonSettings(forms[i]);
+        else if (i == 2) textSettings(forms[i]);
+      }
     });
     e.classList.add("active");
     formsContent[i].classList.remove("hidden"); //tranne quello cliccato
@@ -158,3 +284,24 @@ window.addEventListener("resize", () => {
 document.getElementById("instructions-btn").addEventListener("click", () => {
   document.getElementById("instructions-ctn").classList.toggle("hidden");
 });
+
+// impongo a tutti gli input numbers di essere sempre positivi
+document.querySelectorAll("input[type='number']").forEach((input) => {
+  input.setAttribute("min", "0");
+  input.addEventListener("input", function (e) {
+    if (this.value < 0) {
+      this.value = 0;
+    }
+  });
+});
+
+// Funzione per resettare tutti gli input ai valori placeholder
+function resetInputsToPlaceholder() {
+  const allInputs = document.querySelectorAll(
+    '.form input[type="number"], .form input[type="text"]'
+  );
+
+  allInputs.forEach((input) => {
+    input.value = "";
+  });
+}

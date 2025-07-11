@@ -38,73 +38,125 @@
     <div id="title"><i>RAY</i>CAST PLAYGROUND</div>
 
     <div id="UI" class="flex-col">
-      <!-- MODALITà -->
-      <div class="flex-col">
-        <!-- SEGMENTS -->
-        <form class="form active flex-col field-box" id="segments-form">
-          <p class="mode-title">SEGMENTS</p>
-          <div class="form-content flex-col">
-            <div class="field">
-              <label>minlength</label>
-              <input type="number" placeholder="50" />
-            </div>
-            <div class="field">
-              <label>maxlength</label>
-              <input type="number" placeholder="300" />
-            </div>
-            <div class="field">
-              <label>number</label>
-              <input type="number" placeholder="8" />
-            </div>
+      <div class="flex-col gap">
+        <!-- MODALITà -->
+        <div class="flex-col field-box" id="modalità">
+          <p class="mode-title">MODALITà</p>
+          <!-- SEGMENTS -->
+          <form class="form active flex-col field-box" id="segments-form">
+            <p class="mode-title">SEGMENTS</p>
+            <div class="form-content flex-col gap">
+              <div class="field">
+                <label>minlength</label>
+                <input type="number" placeholder="50" class="input" />
+              </div>
+              <div class="field">
+                <label>maxlength</label>
+                <input type="number" placeholder="300" class="input" />
+              </div>
+              <div class="field">
+                <label>number</label>
+                <input type="number" placeholder="8" class="input" />
+              </div>
 
-            <button type="submit">render</button>
+              <button type="submit">apply</button>
+            </div>
+          </form>
+
+          <!-- POLIGONS -->
+          <form class="form flex-col field-box" id="polygons-form">
+            <p class="mode-title">POLYGONS</p>
+            <div class="form-content flex-col gap hidden">
+              <div class="field">
+                <label>minvertex</label>
+                <input type="number" placeholder="3" class="input" />
+              </div>
+              <div class="field">
+                <label>maxvertex</label>
+                <input type="number" placeholder="6" class="input" />
+              </div>
+              <div class="field">
+                <label>minradius</label>
+                <input type="number" placeholder="50" class="input" />
+              </div>
+              <div class="field">
+                <label>maxradius</label>
+                <input type="number" placeholder="250" class="input" />
+              </div>
+              <div class="field">
+                <label>number</label>
+                <input type="number" placeholder="5" class="input" />
+              </div>
+
+              <button type="submit">apply</button>
+            </div>
+          </form>
+
+          <!-- TEXT -->
+          <form class="form flex-col field-box" id="text-form">
+            <p class="mode-title">TEXT</p>
+            <div class="form-content flex-col gap hidden">
+              <div class="field">
+                <label>text</label>
+                <input type="text" placeholder="Hello :)" class="input" />
+              </div>
+              <div class="field">
+                <label>fontsize</label>
+                <input type="number" placeholder="300" class="input" />
+              </div>
+              <button type="submit">apply</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- COLORS -->
+        <div class="field-box flex-col">
+          <p class="mode-title">COLORS</p>
+
+          <!-- MULTICOLORED -->
+          <div
+            class="color-form active flex-col field-box"
+            id="multicolored-form"
+          >
+            <p class="mode-title">MULTICOLORED</p>
+            <div class="color-form-content flex-col gap">
+              <div class="field">
+                <label>palette</label>
+                <select class="input" id="particle-multi">
+                  <option value="vibrant">Vibrant</option>
+                  <option value="neon">Neon</option>
+                  <option value="pastel">Pastel</option>
+                  <option value="warm">Warm</option>
+                  <option value="cool">Cool</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>background</label>
+                <input type="color" value="#000000" id="bg-multi" />
+              </div>
+            </div>
           </div>
-        </form>
 
-        <!-- POLIGONS -->
-        <form class="form flex-col field-box" id="polygons-form">
-          <p class="mode-title">POLYGONS</p>
-          <div class="form-content flex-col hidden">
-            <div class="field">
-              <label>minvertex</label>
-              <input type="number" placeholder="3" />
+          <!-- MONOCHROME -->
+          <div class="color-form flex-col field-box" id="monochrome-form">
+            <p class="mode-title">MONOCHROME</p>
+            <div class="color-form-content flex-col gap hidden">
+              <div class="field">
+                <label>particles</label>
+                <input
+                  type="color"
+                  placeholder="white"
+                  value="#FFFFFF"
+                  id="particle-mono"
+                />
+              </div>
+              <div class="field">
+                <label>background</label>
+                <input type="color" value="#000000" id="bg-mono" />
+              </div>
             </div>
-            <div class="field">
-              <label>maxvertex</label>
-              <input type="number" placeholder="6" />
-            </div>
-            <div class="field">
-              <label>minradius</label>
-              <input type="number" placeholder="50" />
-            </div>
-            <div class="field">
-              <label>maxradius</label>
-              <input type="number" placeholder="250" />
-            </div>
-            <div class="field">
-              <label>number</label>
-              <input type="number" placeholder="5" />
-            </div>
-
-            <button type="submit">render</button>
           </div>
-        </form>
-
-        <!-- TEXT -->
-        <form class="form flex-col field-box" id="text-form">
-          <p class="mode-title">TEXT</p>
-          <div class="form-content flex-col hidden">
-            <div class="field">
-              <label>text</label>
-              <input type="text" placeholder="Hello :)" />
-            </div>
-            <div class="field">
-              <label>fontsize</label>
-              <input type="number" placeholder="300" />
-            </div>
-            <button type="submit">render</button>
-          </div>
-        </form>
+        </div>
 
         <!-- TOGGLES -->
         <div class="field-box flex-col">

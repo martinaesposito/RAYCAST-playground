@@ -33,7 +33,11 @@ class segmentBoundary {
   }
 
   show() {
-    stroke(255);
+    if (settings.colors.mode === "monochrome") {
+      stroke(settings.colors.particles);
+    } else {
+      stroke(255);
+    }
     strokeWeight(0.5);
     line(this.a.x, this.a.y, this.b.x, this.b.y);
   }
