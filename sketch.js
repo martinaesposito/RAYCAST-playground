@@ -18,6 +18,12 @@ let isDragging = false;
 
 let raysBuffer; //create graphics per renderizzare i raggi e ottimizzare la performance dello sketch
 
+// video
+let cachedVideoSize = null,
+  cachedScaleFactor = null;
+let lastVideoWidth = 0,
+  lastVideoHeight = 0;
+
 ///////////////////////////////
 function preload() {
   font = loadFont("AVHersheySimplexLight.ttf"); //FONT
@@ -251,9 +257,11 @@ function draw() {
       b.move(frameCount);
     }
   }
-
+  console.log(isDragging);
+  // Muovi le particles solo se la pallina non sta venendo trascinata
   if (document.getElementById("move-particles").checked == true) {
     for (let p of particles) {
+      if (isDragging && p === pM) continue;
       p.move(frameCount);
     }
   }
@@ -264,10 +272,6 @@ function draw() {
 }
 
 //////////////
-let cachedVideoSize = null,
-  cachedScaleFactor = null;
-let lastVideoWidth = 0,
-  lastVideoHeight = 0;
 
 // VIDEO
 function handleVideoInput() {
@@ -282,8 +286,6 @@ function handleVideoInput() {
   ) {
     lastVideoWidth = videoElement.videoWidth;
     lastVideoHeight = videoElement.videoHeight;
-
-    console.log("hey");
 
     const videoMoreHorizontalThanScreen =
       videoElement.videoWidth / videoElement.videoHeight > width / height;
@@ -340,7 +342,7 @@ function handleVideoInput() {
       if (
         (angle !== null && angle < 20) || //se l'angolo tra le tre dita è minore di 20°
         dist(
-          remapCoords[4].x, //se la distanza tra i due punti è minore di 20 px
+          remapCoords[4].x, // o se la distanza tra i due punti è minore di 20 px
           remapCoords[4].y,
           remapCoords[8].x,
           remapCoords[8].y
@@ -391,10 +393,8 @@ function mousePressed() {
     // Segui la stessa logica dei settings per la selezione del colore
     let newColor;
     if (settings.colors.mode === "monochrome") {
-      // Modalità monocromatica - usa il colore delle particelle
       newColor = settings.colors.particles;
     } else {
-      // Modalità multicolore - usa un colore random dalla palette dei settings
       newColor = random(settings.colors.palette);
     }
 

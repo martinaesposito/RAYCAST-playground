@@ -171,6 +171,7 @@ colorForms.forEach((e, i) => {
     document.querySelectorAll(".color-form-content").forEach((el) => {
       el.classList.add("hidden");
       if (!wasAlreadyActive) {
+        resetInputsToPlaceholder();
         if (i == 0) multicoloredSettings(colorForms[i]);
         else if (i == 1) monochromeSettings(colorForms[i]);
       }
@@ -285,22 +286,30 @@ document.getElementById("instructions-btn").addEventListener("click", () => {
 });
 
 // impongo a tutti gli input numbers di essere sempre positivi
-document.querySelectorAll("input[type='number']").forEach((input) => {
-  input.setAttribute("min", "0");
-  input.addEventListener("input", function (e) {
-    if (this.value < 0) {
-      this.value = 0;
-    }
-  });
-});
+// document.querySelectorAll("input[type='number']").forEach((input) => {
+//   input.setAttribute("min", "0");
+//   input.addEventListener("input", function (e) {
+//     if (this.value < 0) {
+//       this.value = 0;
+//     }
+//   });
+// });
 
 // Funzione per resettare tutti gli input ai valori placeholder
 function resetInputsToPlaceholder() {
-  const allInputs = document.querySelectorAll(
-    '.form input[type="number"], .form input[type="text"]'
-  );
+  document
+    .querySelectorAll(
+      '.form input[type="number"], .form input[type="text"], input[type="color"]'
+    )
+    .forEach((input) => {
+      input.value = "";
+    });
 
-  allInputs.forEach((input) => {
-    input.value = "";
+  document.querySelectorAll('input[type="color"]').forEach((input) => {
+    input.value = input.placeholder;
+  });
+
+  document.querySelectorAll("select").forEach((s) => {
+    s.selectedIndex = 0;
   });
 }

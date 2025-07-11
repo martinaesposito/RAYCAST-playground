@@ -81,19 +81,43 @@
             <div class="form-content flex-col gap hidden">
               <div class="field">
                 <label>minvertex</label>
-                <input type="number" placeholder="3" class="input" min="0" />
+                <input
+                  type="number"
+                  placeholder="3"
+                  class="input"
+                  min="3"
+                  max="10"
+                />
               </div>
               <div class="field">
                 <label>maxvertex</label>
-                <input type="number" placeholder="6" class="input" min="0" />
+                <input
+                  type="number"
+                  placeholder="6"
+                  class="input"
+                  min="3"
+                  max="18"
+                />
               </div>
               <div class="field">
                 <label>minradius</label>
-                <input type="number" placeholder="50" class="input" min="0" />
+                <input
+                  type="number"
+                  placeholder="50"
+                  class="input"
+                  min="0"
+                  max="500"
+                />
               </div>
               <div class="field">
                 <label>maxradius</label>
-                <input type="number" placeholder="250" class="input" min="0" />
+                <input
+                  type="number"
+                  placeholder="250"
+                  class="input"
+                  min="0"
+                  max="2500"
+                />
               </div>
               <div class="field">
                 <label>number</label>
@@ -114,7 +138,13 @@
               </div>
               <div class="field">
                 <label>fontsize</label>
-                <input type="number" placeholder="300" class="input" />
+                <input
+                  type="number"
+                  placeholder="300"
+                  class="input"
+                  min="24"
+                  max="450"
+                />
               </div>
               <button type="submit">apply</button>
             </div>
@@ -134,7 +164,7 @@
             <div class="color-form-content flex-col gap">
               <div class="field">
                 <label>palette</label>
-                <select class="input" id="particle-multi">
+                <select class="input" id="particle-multi" value="Vibrant">
                   <option value="vibrant">Vibrant</option>
                   <option value="neon">Neon</option>
                   <option value="pastel">Pastel</option>
@@ -157,14 +187,19 @@
                 <label>particles</label>
                 <input
                   type="color"
-                  placeholder="white"
+                  placeholder="#FFFFFF"
                   value="#FFFFFF"
                   id="particle-mono"
                 />
               </div>
               <div class="field">
                 <label>background</label>
-                <input type="color" value="#000000" id="bg-mono" />
+                <input
+                  type="color"
+                  value="#000000"
+                  placeholder="#000000"
+                  id="bg-mono"
+                />
               </div>
             </div>
           </div>
