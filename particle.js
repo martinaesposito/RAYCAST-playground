@@ -31,9 +31,14 @@ class particle {
   show() {
     fill(this.c);
     ellipse(this.pos.x, this.pos.y, 0.1);
-    // for (let ray of this.rays) {
-    //   ray.show(this.c);
-    // }
+  }
+
+  highlight() {
+    push();
+    noStroke();
+    fill(255, 100);
+    ellipse(this.pos.x, this.pos.y, 25); // cerchio intorno
+    pop();
   }
 
   cast(boundaries, pg) {

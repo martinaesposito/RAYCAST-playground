@@ -227,48 +227,49 @@ function particleGenerate() {
 function draw() {
   background(settings.colors.background || 0);
   raysBuffer.clear();
-  // clear();
-  // sfondo leggermente opaco - che permette di vedere il video input quando viene scritto
-  // push();
-  // fill(0, 200);
-  // rect(0, 0, width, height);
-  // pop();
 
-  // clear();
+  //VIDEO
+  handleVideoInput();
 
+  // BOUNDARIES
   for (let b of boundaries) {
     b.show();
   }
 
-  // Particle che segue il mouse - until it's released
+  // PARTICLES
+  // particle following the mouse - until it's released
   if (pM && mouseIsPressed && mouseX < windowWidth * 0.8) {
     pM.update(mouseX, mouseY);
   }
 
-  particles.forEach((e) => {
-    // blendMode(ADD); //così da avere un effetto quasi blur nella riflessione
-    e.cast(boundaries, raysBuffer);
-    // blendMode(BLEND); //ripristino modalità di fusione
-    e.show();
+  particles.forEach((p) => {
+    p.cast(boundaries, raysBuffer);
+    p.show();
+
+    if (
+      dist(mouseX, mouseY, p.pos.x, p.pos.y) < 25 ||
+      (isDragging && p === pM)
+    ) {
+      p.highlight(); // select highlight
+    }
   });
 
+  // MOVE METHODS
   if (document.getElementById("move-boundaries").checked == true) {
     for (let b of boundaries) {
       b.move(frameCount);
     }
   }
-  console.log(isDragging);
-  // Muovi le particles solo se la pallina non sta venendo trascinata
+  //move the particle only if it isn't pinched
   if (document.getElementById("move-particles").checked == true) {
     for (let p of particles) {
       if (isDragging && p === pM) continue;
       p.move(frameCount);
     }
   }
-  image(raysBuffer, 0, 0);
 
-  //VIDEO
-  handleVideoInput();
+  // RAYS BUFFER
+  image(raysBuffer, 0, 0);
 }
 
 //////////////
@@ -305,7 +306,7 @@ function handleVideoInput() {
         : width / cachedVideoSize.w;
   }
 
-  // handlandmark
+  // HANDLANDMARK
   if (detections.multiHandLandmarks !== undefined) {
     for (const hand of detections.multiHandLandmarks) {
       let remapCoords = [];
@@ -317,7 +318,7 @@ function handleVideoInput() {
         fill(255);
         ellipse(x, y, 5, 5);
 
-        // testo che identifica il numero di ciascun dito
+        // TEXT FOR HAND LANDMARKS
         // push();
         // fill(175, 100);
         // translate(x, y);
@@ -348,6 +349,7 @@ function handleVideoInput() {
           remapCoords[8].y
         ) <= 20
       ) {
+        noStroke();
         fill(255, 100);
         ellipse(remapCoords[8].x, remapCoords[8].y, 25, 25);
         ellipse(remapCoords[4].x, remapCoords[4].y, 25, 25);
@@ -357,6 +359,7 @@ function handleVideoInput() {
           for (let p of particles) {
             if (dist(pinchCenter.x, pinchCenter.y, p.pos.x, p.pos.y) <= 20) {
               pM = p;
+
               isDragging = true;
               prevPinch = { ...pinchCenter };
               break;

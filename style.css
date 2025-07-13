@@ -10,6 +10,11 @@ body {
   overflow: hidden;
 
   background-color: black;
+
+  /* prevent select */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 div {
@@ -236,4 +241,5 @@ input[type="color"] {
 #instructions {
   color: black;
   background-color: rgba(255, 255, 255, 1);
+  max-width: 50%;
 }
