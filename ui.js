@@ -168,15 +168,18 @@ const colorForms = document.querySelectorAll(".color-form");
 colorForms.forEach((e, i) => {
   e.addEventListener("click", () => {
     const wasAlreadyActive = e.classList.contains("active");
+
     colorForms.forEach((f) => f.classList.remove("active"));
-    document.querySelectorAll(".color-form-content").forEach((el) => {
+    colorFormsContent.forEach((el) => {
       el.classList.add("hidden");
-      if (!wasAlreadyActive) {
-        resetInputsToPlaceholder();
-        if (i == 0) multicoloredSettings(colorForms[i]);
-        else if (i == 1) monochromeSettings(colorForms[i]);
-      }
     });
+
+    if (!wasAlreadyActive) {
+      resetInputsToPlaceholder();
+      if (i === 0) multicoloredSettings(colorForms[i]);
+      else if (i === 1) monochromeSettings(colorForms[i]);
+    }
+
     e.classList.add("active");
     colorFormsContent[i].classList.remove("hidden");
   });
