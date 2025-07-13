@@ -115,8 +115,6 @@ function poligonSettings(formEl) {
     number: Number(inputs[4].value || inputs[4].placeholder),
   };
 
-  console.log("Polygons Form Values:", values);
-
   settings.mode = "polygons";
   settings.settings = {
     minVertex: values.minVertex,
@@ -145,8 +143,6 @@ function textSettings(formEl) {
     formEl.querySelector("input[type='number']").value ||
       formEl.querySelector("input[type='number']").placeholder
   );
-
-  console.log("Text Form Values:", { text, size });
 
   settings.mode = "text";
   settings.settings = {
@@ -263,7 +259,7 @@ forms.forEach((e, i) => {
 
     forms.forEach((f) => f.classList.remove("active"));
     document.querySelectorAll(".form-content").forEach((el, a) => {
-      // nasconde tutti i contenuti
+      // hide all contents
       el.classList.add("hidden");
       if (!wasAlreadyActive) {
         resetInputsToPlaceholder();
@@ -328,11 +324,11 @@ setTimeout(() => {
 
 /////////
 
-// winndow resize
+// window resize
 let resizeTimeout;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimeout);
-  resizeTimeout = setTimeout(handleResize, 100); //use a setTimeOut to await for the resize to finish before calling the function
+  resizeTimeout = setTimeout(handleResize, 100); // use setTimeout to wait for the resize to finish before calling the function
 });
 
 function handleResize() {

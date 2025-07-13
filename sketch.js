@@ -86,7 +86,7 @@ function polygonBoundaries(settings) {
 
   while (polygonCount < settings.number) {
     const polygon = generatePolygon(
-      floor(random(settings.minVertex, settings.maxVertex)), //vertici
+      floor(random(settings.minVertex, settings.maxVertex)), //vertices
       random(settings.minRadius, settings.maxRadius) //radius
     );
     // checks if poligons intersects some others
@@ -138,7 +138,7 @@ function generatePolygon(numVertices, radius) {
   // segments
   const segments = [];
   for (let i = 0; i < vertices.length; i++) {
-    const next = vertices[(i + 1) % vertices.length]; // Il modulo assicura che l'ultimo si connetta al primo
+    const next = vertices[(i + 1) % vertices.length]; // ensures that the last connects to the first
 
     segments.push(
       new segmentBoundary(vertices[i].x, vertices[i].y, next.x, next.y)
@@ -166,7 +166,7 @@ function textBoundaries(settings) {
     let next = textPoints[i + 1];
     let d = dist(current.x, current.y, next.x, next.y);
 
-    if (d > 15) continue; //if the distance between to points is more than 15 do not draw (trick to separate letters!)
+    if (d > 15) continue; //if the distance between two points is more than 15 do not draw (trick to separate letters!)
 
     let segment = new segmentBoundary(current.x, current.y, next.x, next.y);
     boundaries.push(segment);
@@ -416,5 +416,5 @@ function calculateAngle(p1, p2, p3) {
   const magnitude2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
 
   const cosTheta = dotProduct / (magnitude1 * magnitude2);
-  return Math.acos(cosTheta) * (180 / Math.PI); // convert from radiants to degrees
+  return Math.acos(cosTheta) * (180 / Math.PI); // convert from radians to degrees
 }

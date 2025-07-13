@@ -7,7 +7,7 @@ class segmentBoundary {
     this.noiseOffset = createVector(random(1000), random(1000));
   }
   move(t) {
-    // different offset for the twp vertices
+    // different offset for the two vertices
     const t1 = t * 0.0025;
     const t2 = (t + 10000) * 0.0025;
 
@@ -23,7 +23,7 @@ class segmentBoundary {
     const newA = p5.Vector.add(this.a, da);
     const newB = p5.Vector.add(this.b, db);
 
-    // Constrain ipotetico per le nuove posizioni
+    // contrain the two new positions within the margins
     newA.x = constrain(newA.x, margin, width - margin);
     newA.y = constrain(newA.y, margin, height - margin);
     newB.x = constrain(newB.x, margin, width - margin);
