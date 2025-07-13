@@ -13,13 +13,13 @@ class ray {
   show(c) {
     stroke(c);
     push();
-    translate(this.pos.x, this.pos.y); //traslo al punto di origine
-    line(0, 0, this.dir.x, this.dir.y); //i multiply the rayf or ten so that it's visible
+    translate(this.pos.x, this.pos.y); //translate to the origin point
+    line(0, 0, this.dir.x, this.dir.y);
     pop();
   }
 
   cast(boundary) {
-    //two parameters t => 0<t<1 and u => u>0
+    //create the lines that connect only those segments that fulfil the conditions: t => 0<t<1 and u => u>0
 
     let x1 = boundary.a.x;
     let x2 = boundary.b.x;

@@ -4,7 +4,6 @@ class particle {
     this.pos = createVector(x, y);
     this.rays = [];
     for (let a = 0; a < 360; a += 0.75) {
-      //creo 360 raggi per particella, uno ad angolo
       this.rays.push(new ray(this.pos, radians(a)));
     }
     this.noiseOffset = createVector(random(1000), random(1000));
@@ -36,22 +35,19 @@ class particle {
   highlight() {
     push();
     noStroke();
-    fill(255, 100);
-    ellipse(this.pos.x, this.pos.y, 25); // cerchio intorno
+    fill(255, 50);
+    ellipse(this.pos.x, this.pos.y, 25);
     pop();
   }
 
   cast(boundaries, pg) {
-    const maxBounces = 2; // o 3
-    const minLength = 30; // riflessioni solo se il raggio è abbastanza lungo
-
     for (let ray of this.rays) {
       let closest = null;
-      let record = Infinity; //inizializzo il record iniziale a infinito per ciascun boundary
-      let b; //salvo il boundary colpito per generare successivamente la riflessione
+      let record = Infinity; //initialize the initial record to infinity for each boundary
+      let b; //save the boundary to later generate the reflection
 
       for (let boundary of boundaries) {
-        const pt = ray.cast(boundary); //trovo il closest boundary
+        const pt = ray.cast(boundary); //find the closest boundary
 
         if (pt) {
           const d = p5.Vector.dist(this.pos, pt);
@@ -68,26 +64,25 @@ class particle {
         pg.strokeWeight(0.1);
         pg.line(this.pos.x, this.pos.y, closest.x, closest.y);
 
-        // RIFLESSIONE
+        // REFLECTION
         if (record < 500) {
-          const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vettore della direzione con cui il raggio colpisce la superficie
+          const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vector of the direction in which the ray strikes the surface
           let normal = createVector(
             -(b.b.y - b.a.y),
             b.b.x - b.a.x
-          ).normalize(); // vettore perpendicolare alla superficie colpita
-          const dot = incidence.dot(normal); //serve per calcolare il rapporto tra la direzione del raggio incidente e il vettore normale perpendicolare al boundary
+          ).normalize(); // vector perpendicular to the surface
+          const dot = incidence.dot(normal); // calculate the ratio between the direction of the incident ray and the normal vector perpendicular to the boundary
           if (dot > 0) normal.mult(-1);
+          // calculate the direction of the reflected ray
           const reflection = p5.Vector.sub(
-            //calcolo il vettore corrispondente alla riflessione - per cui sottraggo al vettore incidenza un vettore
             incidence,
             p5.Vector.mult(normal, 2 * dot)
           );
-
-          // Estendi riflesso per disegnarlo
+          // extend its length to make it visible
           const reflectedEnd = p5.Vector.add(
             closest,
             p5.Vector.mult(reflection, 1000)
-          ); // lunghezza riflesso
+          );
           alpha(0.05);
 
           let c = color(this.c);

@@ -1,3 +1,4 @@
+// SETTINGS
 let settings = {
   mode: "",
   settings: {},
@@ -55,6 +56,11 @@ const COLOR_PALETTES = {
 
 let showCamera;
 
+// POPUP
+let o = 1;
+let hasMoved, fading;
+
+//////////////////
 // FORM SUBMIT
 document.querySelectorAll(".form").forEach((formEl) => {
   formEl.addEventListener("submit", function (e) {
@@ -70,7 +76,7 @@ document.querySelectorAll(".form").forEach((formEl) => {
   });
 });
 
-// segments
+// SEGMENTS FORM
 function segmentSettings(formEl) {
   const inputs = formEl.querySelectorAll("input[type='number']");
 
@@ -159,7 +165,6 @@ function textSettings(formEl) {
 }
 
 //////////////////////////
-
 // COLOR FORM SELECT
 const colorFormsContent = document.querySelectorAll(".color-form-content");
 const colorForms = document.querySelectorAll(".color-form");
@@ -231,9 +236,7 @@ document.getElementById("bg-mono").addEventListener("change", () => {
 });
 
 //////////////////////////
-
 // CAMERA TOGGLE
-// showCamera = true;
 document
   .getElementById("toggle-camera")
   .addEventListener("change", function () {
@@ -242,16 +245,14 @@ document
     console.log("Camera Toggle:", showCamera);
   });
 
-//  /////////////
-
+///////////////
 // DOWNLOAD BUTTON
 document.getElementById("download").addEventListener("click", function () {
   console.log("Downloading canvas...");
   saveCanvas("raycast_output", "png");
 });
 
-//  /////////////
-
+///////////////
 // FORM OPEN/ CLOSE
 const formsContent = document.querySelectorAll(".form-content");
 const forms = document.querySelectorAll(".form");
@@ -272,30 +273,12 @@ forms.forEach((e, i) => {
       }
     });
     e.classList.add("active");
-    formsContent[i].classList.remove("hidden"); //tranne quello cliccato
+    formsContent[i].classList.remove("hidden");
   });
 });
 
-//
-window.addEventListener("resize", () => {
-  location.reload();
-});
-
-document.getElementById("instructions-btn").addEventListener("click", () => {
-  document.getElementById("instructions-ctn").classList.toggle("hidden");
-});
-
-// impongo a tutti gli input numbers di essere sempre positivi
-// document.querySelectorAll("input[type='number']").forEach((input) => {
-//   input.setAttribute("min", "0");
-//   input.addEventListener("input", function (e) {
-//     if (this.value < 0) {
-//       this.value = 0;
-//     }
-//   });
-// });
-
-// Funzione per resettare tutti gli input ai valori placeholder
+///////////////
+// RESET INPUTS
 function resetInputsToPlaceholder() {
   document
     .querySelectorAll(
@@ -312,4 +295,53 @@ function resetInputsToPlaceholder() {
   document.querySelectorAll("select").forEach((s) => {
     s.selectedIndex = 0;
   });
+}
+
+///////////////
+// POPUP
+function fadeOut() {
+  const interval = setInterval(() => {
+    if (o <= 0) {
+      clearInterval(interval); //when opacity is equal to zero the interval resets
+      return;
+    }
+    o -= 0.05;
+    document.getElementById("popup").style.opacity = o;
+  }, 1);
+}
+
+// if the mouse is moved make the instructions fade
+window.addEventListener("mousemove", () => {
+  if (!hasMoved) {
+    hasMoved = true;
+    fadeOut();
+  }
+});
+
+// else wait for 5 seconds and then fade
+setTimeout(() => {
+  if (!hasMoved) {
+    hasMoved = true;
+    fadeOut();
+  }
+}, 5000);
+
+/////////
+
+// winndow resize
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(handleResize, 100); //use a setTimeOut to await for the resize to finish before calling the function
+});
+
+function handleResize() {
+  resizeCanvas(window.innerWidth, window.innerHeight);
+  //reset particles and boundaries
+  particles = [];
+  boundaries = [];
+
+  settings.mode = "segments";
+  segmentsBoundaries(settings.settings);
+  particleGenerate();
 }

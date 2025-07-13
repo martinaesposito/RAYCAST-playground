@@ -208,7 +208,7 @@
         <!-- TOGGLES -->
         <div class="field-box flex-col">
           <p class="mode-title">Additional options</p>
-          <!-- movements -->
+          <!-- Movements -->
           <div class="field">
             <label>move boundaries</label>
             <label class="switch">
@@ -223,7 +223,7 @@
               <span class="slider round"></span>
             </label>
           </div>
-          <!-- camera -->
+          <!-- Camera -->
           <div class="field">
             <label>camera input</label>
             <label class="switch">
@@ -232,25 +232,22 @@
             </label>
           </div>
         </div>
-        <div class="field-box" id="instructions-btn"><i>instructions</i></div>
       </div>
 
       <!-- Download button -->
       <button id="download">download</button>
     </div>
 
-    <!-- Video sotto il canvas -->
+    <!-- Video -->
     <video id="capture" autoplay muted playsinline></video>
 
-    <!-- instructions -->
-    <div id="instructions-ctn" class="flex-col hidden">
-      <div id="instructions" class="field-box">
-        <p>instructions</p>
-        To interact both with the particles and the boundaries use the mouse. By
-        clicking anywhere in the canvas you can add a new particle
-        <br />
-        per chiudere questa schermata comunque ricliccare su instructions
-        <!-- <p>segments length</p> -->
+    <!-- Pop-up instructions-->
+    <div class="flex-col ctn">
+      <div id="popup" class="field-box">
+        A platform to experiment visual effects using ray casting. <br /><br />
+        Move around the lights using the mouse (or your hands :) ) <br />
+        or create new particles by clicking around the canvas.<br /><br />
+        PS: Don't forget to save your artwork at the end!
       </div>
     </div>
 

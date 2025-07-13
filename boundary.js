@@ -7,7 +7,7 @@ class segmentBoundary {
     this.noiseOffset = createVector(random(1000), random(1000));
   }
   move(t) {
-    // offset diverso per i due punti
+    // different offset for the twp vertices
     const t1 = t * 0.0025;
     const t2 = (t + 10000) * 0.0025;
 
@@ -29,7 +29,7 @@ class segmentBoundary {
     newB.x = constrain(newB.x, margin, width - margin);
     newB.y = constrain(newB.y, margin, height - margin);
 
-    // verifico che la lunghezza sia compresa tra 1/4 e *4 la lunghezza originale
+    // check that the length is between 1/4 and *4 the original length
     const newLength = p5.Vector.dist(newA, newB);
     if (
       newLength >= this.originalLength / 4 &&
@@ -44,7 +44,7 @@ class segmentBoundary {
     if (settings.colors.mode === "monochrome") {
       stroke(settings.colors.particles);
     } else {
-      stroke(255);
+      stroke(255); //if the palette is multicolored, all the boundaries must be white
     }
     strokeWeight(0.5);
     line(this.a.x, this.a.y, this.b.x, this.b.y);
