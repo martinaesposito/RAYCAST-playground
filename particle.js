@@ -66,13 +66,18 @@ class particle {
 
         // REFLECTION
         if (record < 500) {
-          const incidence = p5.Vector.sub(closest, this.pos).normalize(); //vector of the direction in which the ray strikes the surface
+          //vector of the direction in which the ray strikes the surface
+          const incidence = p5.Vector.sub(closest, this.pos).normalize();
+
           let normal = createVector(
             -(b.b.y - b.a.y),
             b.b.x - b.a.x
           ).normalize(); // vector perpendicular to the surface
-          const dot = incidence.dot(normal); // calculate the ratio between the direction of the incident ray and the normal vector perpendicular to the boundary
-          if (dot > 0) normal.mult(-1);
+
+          if (incidence.dot(normal) > 0) normal.mult(-1);
+          //i need to do the scalar product after verifying the direction of the normal !!!!
+          const dot = incidence.dot(normal); // calculate the ratio(dot product) between the direction of the incident ray and the normal vector perpendicular to the boundary
+
           // calculate the direction of the reflected ray
           const reflection = p5.Vector.sub(
             incidence,
