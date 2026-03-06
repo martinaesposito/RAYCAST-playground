@@ -141,7 +141,7 @@ function textSettings(formEl) {
     formEl.querySelector("input[type='text']").placeholder;
   const size = Number(
     formEl.querySelector("input[type='number']").value ||
-      formEl.querySelector("input[type='number']").placeholder
+      formEl.querySelector("input[type='number']").placeholder,
   );
 
   settings.mode = "text";
@@ -281,7 +281,7 @@ forms.forEach((e, i) => {
 function resetInputsToPlaceholder() {
   document
     .querySelectorAll(
-      '.form input[type="number"], .form input[type="text"], input[type="color"]'
+      '.form input[type="number"], .form input[type="text"], input[type="color"]',
     )
     .forEach((input) => {
       input.value = "";
@@ -344,3 +344,19 @@ function handleResize() {
   segmentsBoundaries(settings.settings);
   particleGenerate();
 }
+
+const sVideo = document.getElementById("sfondo-video");
+console.log(sVideo);
+let currentVideo = 1;
+
+setInterval(() => {
+  currentVideo++;
+  console.log(currentVideo);
+
+  if (currentVideo > 6) {
+    currentVideo = 1;
+  }
+
+  sVideo.src = `videos/${currentVideo}.mov`;
+  sVideo.play();
+}, 1500);
