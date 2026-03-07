@@ -357,6 +357,6 @@ setInterval(() => {
     currentVideo = 1;
   }
 
-  sVideo.src = `videos/${currentVideo}.mov`;
+  sVideo.src = `videos/${currentVideo}.mp4`;
   sVideo.play();
 }, 1500);
